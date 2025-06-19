@@ -13,6 +13,7 @@ import Login from "./pages/login.tsx";
 import NoteTables from "./components/note/noteTables.tsx";
 import CategoriesScreen from "./pages/categories.tsx";
 import PostCategory from "./components/category/PostCategory.tsx";
+import UpdateNote from "./components/note/UpdateNote.tsx";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/notes" element={<NoteTables />} />
         <Route path="/postuser" element={<PostUser />} />
         <Route path="/note/create" element={<PostNote />} />
+        <Route path="/note/update/:id" element={<UpdateNote />} />
         <Route path="/categories" element={<CategoriesScreen />} />
         <Route path="/categories/create" element={<PostCategory />} />
         {/* <Route path="*" element={<NoMatch />} /> */}

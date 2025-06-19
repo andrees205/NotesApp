@@ -1,6 +1,6 @@
 // File: src/components/note/NoteTable.tsx
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Container, Spinner, Alert, Button } from "react-bootstrap";
+import { Card, Row, Col, Container, Spinner, Alert, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 interface Note {
@@ -13,8 +13,15 @@ interface Note {
   updatedAt: string;
 }
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 const NoteTables: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | "">("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -22,50 +29,101 @@ const NoteTables: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchNotes = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const response = await fetch("http://localhost:8080/api/notes");
-        if (!response.ok) throw new Error("Failed to fetch notes");
-        const data: Note[] = await response.json();
-        const filtered = data.filter((note) => note.userId.toString() === userId);
-        setNotes(filtered);
+        const [notesRes, categoriesRes] = await Promise.all([
+          fetch("http://localhost:8080/api/notes"),
+          fetch("http://localhost:8080/api/categories/user/" + userId)
+        ]);
+
+        if (!notesRes.ok || !categoriesRes.ok) throw new Error("Failed to fetch data");
+
+        const notesData: Note[] = await notesRes.json();
+        const categoriesData: Category[] = await categoriesRes.json();
+
+        setNotes(notesData.filter((note) => note.userId.toString() === userId));
+        setCategories(categoriesData);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
       } finally {
         setLoading(false);
       }
     };
-    fetchNotes();
+
+    fetchData();
   }, [userId]);
 
-  if (loading) return <Spinner animation="border" className="d-block mx-auto mt-5" />;
-  if (error) return <Alert variant="danger" className="mt-4 text-center">{error}</Alert>;
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/notes/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setNotes(notes.filter((note) => note.id !== id));
+      } else {
+        throw new Error("Delete failed");
+      }
+    } catch (err) {
+      alert("Failed to delete note");
+    }
+  };
+
+  const filteredNotes = selectedCategory
+    ? notes.filter((note) => note.categoryId === selectedCategory)
+    : notes;
 
   return (
     <Container className="mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="mb-0">My Notes</h2>
-        <Button variant="primary" onClick={() => navigate("/note/create")}>Create Note</Button>
-      </div>
-      <Row xs={1} md={2} lg={3} className="g-4">
-        {notes.map((note) => (
-          <Col key={note.id}>
-            <Card>
-              <Card.Body>
-                <Card.Title>{note.title}</Card.Title>
-                <Card.Text>{note.content}</Card.Text>
-                <Card.Text>
-                  <small className="text-muted">
-                    Category ID: {note.categoryId} <br />
-                    Created: {new Date(note.createdAt).toLocaleString()} <br />
-                    Updated: {new Date(note.updatedAt).toLocaleString()}
-                  </small>
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      {loading && <Spinner animation="border" className="d-block mx-auto mt-5" />}
+      {error && <Alert variant="danger" className="mt-4 text-center">{error}</Alert>}
+
+      {!loading && !error && (
+        <>
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="mb-0">My Notes</h2>
+            <Button variant="primary" onClick={() => navigate("/note/create")}>Create Note</Button>
+          </div>
+
+          <Form.Group controlId="categoryFilter" className="mb-4">
+            <Form.Label>Filter by Category</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value ? parseInt(e.target.value) : "")}
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+
+          <Row xs={1} md={2} lg={3} className="g-4">
+            {filteredNotes.map((note) => (
+              <Col key={note.id}>
+                <Card>
+                  <Card.Body>
+                    <Card.Title>{note.title}</Card.Title>
+                    <Card.Text>{note.content}</Card.Text>
+                    <Card.Text>
+                      <small className="text-muted">
+                        Category ID: {note.categoryId} <br />
+                        Created: {new Date(note.createdAt).toLocaleString()} <br />
+                        Updated: {new Date(note.updatedAt).toLocaleString()}
+                      </small>
+                    </Card.Text>
+                    <div className="d-flex justify-content-between">
+                      <Button variant="warning" size="sm" onClick={() => navigate(`/note/update/${note.id}`)}>Edit</Button>
+                      <Button variant="danger" size="sm" onClick={() => handleDelete(note.id)}>Delete</Button>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
     </Container>
   );
 };

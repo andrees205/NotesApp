@@ -5,6 +5,7 @@ databaseChangeLog:
       file: db/changelog/002-create-categories.yaml
   - include:
       file: db/changelog/003-create-notes.yaml
-
+  - include:
+      file: db/changelog/004-insert-users.yaml
 
 

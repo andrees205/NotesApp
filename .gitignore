@@ -1,0 +1,59 @@
+# === GLOBAL IGNORE ===
+.DS_Store
+Thumbs.db
+
+# === BACKEND (Spring Boot - Maven) ===
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/pom.xml.tag
+backend/pom.xml.releaseBackup
+backend/pom.xml.versionsBackup
+backend/pom.xml.next
+backend/release.properties
+
+# Logs
+*.log
+logs/
+
+# IntelliJ IDEA
+*.iml
+.idea/
+
+# Eclipse
+*.classpath
+*.project
+*.settings/
+
+# VS Code
+.vscode/
+
+# === FRONTEND (React) ===
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+frontend/.next/
+frontend/.turbo/
+frontend/.parcel-cache/
+frontend/.eslintcache
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.yarn/cache/
+frontend/.pnp/
+frontend/.pnp.js
+frontend/.npm/
+
+# === OS / Misc ===
+*.swp
+*~
+*.bak
+*.tmp
+*.orig
+*.sublime-workspace
+*.sublime-project
