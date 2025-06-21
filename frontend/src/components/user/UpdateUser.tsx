@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getUserById, updateUser } from "../../services/UserService";
+import { getUserById, updateUser } from "../../services/UserService.ts";
 
 interface FormData {
   name: string;

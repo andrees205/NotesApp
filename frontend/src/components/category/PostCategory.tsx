@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { createCategory } from "../../services/CategoryService";
+import { createCategory } from "../../services/CategoryService.ts";
 
 const PostCategory: React.FC = () => {
   const [name, setName] = useState("");

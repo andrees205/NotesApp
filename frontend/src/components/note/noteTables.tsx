@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Container, Spinner, Alert, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getNotesByUser, deleteNote } from "../../services/NoteService";
-import { getCategoriesByUser } from "../../services/CategoryService";
+import { getNotesByUser, deleteNote } from "../../services/NoteService.ts";
+import { getCategoriesByUser } from "../../services/CategoryService.ts";
 
 interface Note {
   id: number;

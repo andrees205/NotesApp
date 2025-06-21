@@ -14,27 +14,25 @@ import NoteTables from "./components/note/noteTables.tsx";
 import CategoriesScreen from "./pages/categories.tsx";
 import PostCategory from "./components/category/PostCategory.tsx";
 import UpdateNote from "./components/note/UpdateNote.tsx";
+import { RoutesEnum } from "./constants/routes.ts";
 
 const App: React.FC = () => {
   const location = useLocation();
-  const hideHeader = ["/login", "/register"].includes(location.pathname);
+  const hideHeader = [RoutesEnum.Login, RoutesEnum.Register].includes(location.pathname as RoutesEnum);
+
   return (
     <>
-       {!hideHeader && <Header />}
-      <Routes>  
-        <Route path="/" element={<Login />} />
-        <Route path="/user" element={<UsersScreen />} />
-        <Route path="/user/:id" element={<UpdateUser />} />
-        <Route path="/notes" element={<NoteTables />} />
-        <Route path="/postuser" element={<PostUser />} />
-        <Route path="/note/create" element={<PostNote />} />
-        <Route path="/note/update/:id" element={<UpdateNote />} />
-        <Route path="/categories" element={<CategoriesScreen />} />
-        <Route path="/categories/create" element={<PostCategory />} />
-        {/* <Route path="*" element={<NoMatch />} /> */}
+      {!hideHeader && <Header />}
+      <Routes>
+        <Route path={RoutesEnum.Login} element={<Login />} />
+        <Route path={RoutesEnum.Users} element={<UsersScreen />} />
+        <Route path={`${RoutesEnum.Users}/:id`} element={<UpdateUser />} />
+        <Route path={RoutesEnum.Notes} element={<NoteTables />} />
+        <Route path={RoutesEnum.PostUser} element={<PostUser />} />
+        <Route path={RoutesEnum.CreateNote} element={<PostNote />} />
+        <Route path={RoutesEnum.Categories} element={<CategoriesScreen />} />
       </Routes>
     </>
   );
 };
-
 export default App;

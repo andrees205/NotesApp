@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getCategoriesByUser } from "../../services/CategoryService";
-import { createNote } from "../../services/NoteService";
+import { getCategoriesByUser } from "../../services/CategoryService.ts";
+import { createNote } from "../../services/NoteService.ts";
 
 const PostNote: React.FC = () => {
   const [title, setTitle] = useState("");

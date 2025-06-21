@@ -35,3 +35,4 @@ export const getNoteById = async (id: number) => {
   if (!res.ok) throw new Error("Note not found");
   return res.json();
 };
+

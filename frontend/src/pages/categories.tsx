@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Container, Spinner, Alert, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getCategoriesByUser } from "../services/CategoryService";
+import { getCategoriesByUser } from "../services/CategoryService.ts";
 interface Category {
   id: number;
   name: string;
