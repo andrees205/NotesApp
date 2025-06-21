@@ -2,6 +2,8 @@ import React, { useState, FormEvent } from "react";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { createCategory } from "../../services/CategoryService.ts";
+import { getUserId } from "../../services/StorageService.ts";
+
 
 const PostCategory: React.FC = () => {
   const [name, setName] = useState("");
@@ -9,7 +11,8 @@ const PostCategory: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
+
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

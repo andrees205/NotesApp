@@ -3,6 +3,7 @@ import { Form, Button, Alert, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { getCategoriesByUser } from "../../services/CategoryService.ts";
 import { createNote } from "../../services/NoteService.ts";
+import { getUserId } from "../../services/StorageService.ts";
 
 const PostNote: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -13,7 +14,7 @@ const PostNote: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
 
   useEffect(() => {
     const fetchCategories = async () => {

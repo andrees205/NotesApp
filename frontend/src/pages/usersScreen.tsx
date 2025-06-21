@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container, Row, Col, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { deleteUser } from "../services/UserService.ts";
   
 interface User {
   id: number;
@@ -28,20 +29,14 @@ const UsersScreen: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/user/${id}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-      } else {
-        console.error("Error deleting user:", response.statusText);
-      }
+      const response = await deleteUser(id);
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error: any) {
       console.error("Error deleting user:", error.message);
     }
   };
 
-    const handleSubmit = (userId: number) => {
+  const handleSubmit = (userId: number) => {
     navigate(`/postuser`);
   };
 

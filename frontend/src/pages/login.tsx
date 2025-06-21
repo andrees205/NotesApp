@@ -1,7 +1,7 @@
-// File: src/pages/login/Login.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Alert } from "react-bootstrap";
+import {setUserId, setUserName} from "../services/StorageService.ts"
 
 const Login: React.FC = () => {
   const [name, setName] = useState("");
@@ -22,8 +22,8 @@ const Login: React.FC = () => {
         throw new Error("Invalid credentials");
       }
       const data = await response.json();
-      localStorage.setItem("userId", data.id);
-      localStorage.setItem("userName", data.name);
+      setUserId(data.id);
+      setUserName(data.name);
       navigate("/user");
     } catch (err: any) {
       setError(err.message || "Login failed");

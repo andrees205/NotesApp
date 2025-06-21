@@ -1,13 +1,13 @@
 export enum RoutesEnum {
-  Home = "/login",
+  Login = "/",
   Users = "/user",
   UpdateUser = "/user/:id",
   PostUser = "/postuser",
-  Notes = "/notes",
-  CreateNote = "/note/create",
+  PostNote = "note/create",
   UpdateNote = "/note/update/:id",
-  Categories = "/categories",
-  PostCategory = "/categories/create",
-  Login = "/login",
+  noteTables = "/notes",  
+  CategoriesScreen = "/categories",
+  PostCategory = "/category/PostCategory",
+  //Login = "/login",
   Register = "/register"
 }

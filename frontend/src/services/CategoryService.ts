@@ -1,9 +1,9 @@
-const API_URL = "http://localhost:8080/api/notes";
+const API_URL = "http://localhost:8080/api/categories";
 
 export const getCategoriesByUser = async (userId: string | null) => {
   if (!userId) throw new Error("User ID is missing");
 
-  const response = await fetch(`${API_URL}/${userId}`);
+ const response = await fetch(`${API_URL}/user/${userId}`);
   if (!response.ok) {
     throw new Error("Failed to fetch categories");
   }
@@ -21,8 +21,7 @@ export const getAllCategories = async () => {
 };
 
 export const createCategory = async (name: string, userId: number) => {
-  const response = await fetch(API_URL, {
-    method: "POST",
+  const response = await fetch(API_URL, {method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, userId }),
   });
@@ -34,7 +33,7 @@ export const createCategory = async (name: string, userId: number) => {
 };
 
 export const updateCategory = async (id: number, name: string, userId: number) => {
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${API_URL}/user/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, userId }),

@@ -3,6 +3,7 @@ import { Card, Row, Col, Container, Spinner, Alert, Button, Form } from "react-b
 import { useNavigate } from "react-router-dom";
 import { getNotesByUser, deleteNote } from "../../services/NoteService.ts";
 import { getCategoriesByUser } from "../../services/CategoryService.ts";
+import { getUserId } from "../../services/StorageService.ts";
 
 interface Note {
   id: number;
@@ -26,7 +27,7 @@ const NoteTables: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
   const navigate = useNavigate();
 
   useEffect(() => {

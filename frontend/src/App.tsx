@@ -8,7 +8,6 @@ import UsersScreen from "./pages/usersScreen.tsx";
 import PostUser from "./components/user/PostUser.tsx";
 import PostNote from "./components/note/postNote.tsx";
 import UpdateUser from "./components/user/UpdateUser.tsx";
-// import NoMatch from "./pages/NoMatch";
 import Login from "./pages/login.tsx";
 import NoteTables from "./components/note/noteTables.tsx";
 import CategoriesScreen from "./pages/categories.tsx";
@@ -25,12 +24,20 @@ const App: React.FC = () => {
       {!hideHeader && <Header />}
       <Routes>
         <Route path={RoutesEnum.Login} element={<Login />} />
+        
+        {/* General screens */}
         <Route path={RoutesEnum.Users} element={<UsersScreen />} />
+        <Route path={RoutesEnum.CategoriesScreen} element={<CategoriesScreen />} />
+        <Route path={RoutesEnum.noteTables} element={<NoteTables />} />
+        
+        {/* Update Screens */}
         <Route path={`${RoutesEnum.Users}/:id`} element={<UpdateUser />} />
-        <Route path={RoutesEnum.Notes} element={<NoteTables />} />
+        <Route path={`${RoutesEnum.UpdateNote}/:id`} element={<UpdateNote />} />
+        
+        {/* Post Routes */}
         <Route path={RoutesEnum.PostUser} element={<PostUser />} />
-        <Route path={RoutesEnum.CreateNote} element={<PostNote />} />
-        <Route path={RoutesEnum.Categories} element={<CategoriesScreen />} />
+        <Route path={RoutesEnum.PostNote} element={<PostNote />} />
+        <Route path={RoutesEnum.PostCategory} element={<PostCategory />} />
       </Routes>
     </>
   );

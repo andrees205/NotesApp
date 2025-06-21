@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Table, Container, Spinner, Alert, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { getCategoriesByUser } from "../services/CategoryService.ts";
+import { RoutesEnum } from "../constants/routes.ts";
+import { getUserId } from "../services/StorageService.ts";
 interface Category {
   id: number;
   name: string;
@@ -12,7 +14,7 @@ const CategoriesScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -35,7 +37,7 @@ const CategoriesScreen: React.FC = () => {
   return (
     <Container className="mt-5">
       <h2 className="text-center mb-4">Categories</h2>
-      <Button variant="primary" onClick={() => navigate("/categories/create")}>Create Category</Button>
+      <Button variant="primary" onClick={() => navigate(RoutesEnum.PostCategory)}>Create Category</Button>
       <Table striped bordered hover>
         <thead>
           <tr>

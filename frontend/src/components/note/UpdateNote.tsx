@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
-import { getCategoriesByUser } from "../../services/CategoryService";
-import { getNoteById, updateNote } from "../../services/NoteService";
+import { getCategoriesByUser } from "../../services/CategoryService.ts";
+import { getNoteById, updateNote } from "../../services/NoteService.ts";
+import { getUserId } from "../../services/StorageService.ts";
 
 const UpdateNote: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,7 +17,7 @@ const UpdateNote: React.FC = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
 
   useEffect(() => {
     const fetchData = async () => {
