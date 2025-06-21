@@ -3,23 +3,22 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { createUser } from "../../services/UserService";
 
 interface FormData {
   name: string;
   password: string;
-} 
+}
 
 const PostUser: React.FC = () => {
   const [formdata, setFormData] = useState<FormData>({
     name: "",
     password: "",
   });
-
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -29,22 +28,11 @@ const PostUser: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formdata);
-
     try {
-      const response = await fetch("http://localhost:8080/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formdata),
-      });
-
-      const data = await response.json();
-      console.log("User created successfully:", data);
+      await createUser(formdata);
       navigate("/user");
     } catch (error: any) {
-      console.error("Error creating user:", error.message);
+      setError(error.message || "Error creating user");
     }
   };
 
@@ -77,6 +65,7 @@ const PostUser: React.FC = () => {
         <Button variant="primary" type="submit">
           Submit
         </Button>
+        {error && <p className="text-danger mt-2">{error}</p>}
       </Form>
     </div>
   );

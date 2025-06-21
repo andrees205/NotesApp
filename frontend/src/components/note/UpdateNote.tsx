@@ -1,7 +1,8 @@
-// File: src/components/note/UpdateNote.tsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button, Alert, Container, Spinner } from "react-bootstrap";
+import { getCategoriesByUser } from "../../services/CategoryService";
+import { getNoteById, updateNote } from "../../services/NoteService";
 
 const UpdateNote: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,15 +21,11 @@ const UpdateNote: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [noteRes, catRes] = await Promise.all([
-          fetch(`http://localhost:8080/api/notes/${id}`),
-          fetch(`http://localhost:8080/api/categories/user/${userId}`),
+        if (!id || !userId) throw new Error("Missing note ID or user ID");
+        const [noteData, catData] = await Promise.all([
+          getNoteById(Number(id)),
+          getCategoriesByUser(userId)
         ]);
-
-        if (!noteRes.ok || !catRes.ok) throw new Error("Fetch failed");
-
-        const noteData = await noteRes.json();
-        const catData = await catRes.json();
 
         setTitle(noteData.title);
         setContent(noteData.content);
@@ -46,12 +43,8 @@ const UpdateNote: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:8080/api/notes/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, categoryId, userId: Number(userId) }),
-      });
-      if (!res.ok) throw new Error("Update failed");
+      if (!id || !userId) throw new Error("Missing note ID or user ID");
+      await updateNote(Number(id), { title, content, categoryId, userId: Number(userId) });
       setSuccess(true);
       setTimeout(() => navigate("/notes"), 1000);
     } catch (err: any) {
@@ -101,9 +94,7 @@ const UpdateNote: React.FC = () => {
             ))}
           </Form.Select>
         </Form.Group>
-        <Button type="submit" variant="primary">
-          Update Note
-        </Button>
+        <Button type="submit" variant="primary">Update Note</Button>
       </Form>
     </Container>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Container, Spinner, Alert, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-
+import { getCategoriesByUser } from "../services/CategoryService";
 interface Category {
   id: number;
   name: string;
@@ -12,13 +12,13 @@ const CategoriesScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/categories");
-        if (!response.ok) throw new Error("Failed to fetch categories");
-        const data: Category[] = await response.json();
+        if (!userId) throw new Error("User ID not found");
+        const data = await getCategoriesByUser(userId);
         setCategories(data);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
@@ -27,7 +27,7 @@ const CategoriesScreen: React.FC = () => {
       }
     };
     fetchCategories();
-  }, []);
+  }, [userId]);
 
   if (loading) return <Spinner animation="border" className="d-block mx-auto mt-5" />;
   if (error) return <Alert variant="danger" className="mt-4 text-center">{error}</Alert>;

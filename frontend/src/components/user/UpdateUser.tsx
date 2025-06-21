@@ -1,71 +1,53 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
-import { Form } from 'react-bootstrap';
-import './UpdateUser.css';
-import Button from 'react-bootstrap/Button';        
-import { useParams } from 'react-router-dom';
+import "./PostUser.css";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getUserById, updateUser } from "../../services/UserService";
 
 interface FormData {
   name: string;
   password: string;
 }
 
-interface RouteParams {
-  id: string;
-}
-
 const UpdateUser: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
   const [formdata, setFormData] = useState<FormData>({
     name: "",
-    password: ""
+    password: "",
   });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   useEffect(() => {
     const fetchUser = async () => {
+      if (!id) return;
       try {
-        const response = await fetch(`http://localhost:8080/api/users/${id}`);
-        const data = await response.json();
-        setFormData({
-          name: data.name || "",
-          password: ""
-        });
+        const user = await getUserById(id);
+        setFormData({ name: user.name || "", password: "" });
       } catch (error: any) {
-        console.error("Error fetching user:", error.message);
+        setError(error.message || "Failed to fetch user");
       }
     };
-
-    if (id) fetchUser();
+    fetchUser();
   }, [id]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formdata);
-
     try {
-      const response = await fetch(`http://localhost:8080/api/users/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formdata)
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("User updated successfully:", data);
-      } else {
-        console.error("Error updating user:", response.statusText);
-      }
+      if (!id) throw new Error("User ID is missing");
+      await updateUser(id, formdata);
+      navigate("/user");
     } catch (error: any) {
-      console.error("Error updating user:", error.message);
+      setError(error.message || "Error updating user");
     }
   };
 
@@ -79,7 +61,7 @@ const UpdateUser: React.FC = () => {
             type="text"
             name="name"
             placeholder="Enter your user name"
-            value={formdata.name || ""}
+            value={formdata.name}
             onChange={handleInputChange}
           />
         </Form.Group>
@@ -90,14 +72,15 @@ const UpdateUser: React.FC = () => {
             type="text"
             name="password"
             placeholder="Enter your password"
-            value={formdata.password || ""}
+            value={formdata.password}
             onChange={handleInputChange}
           />
-        </Form.Group>    
+        </Form.Group>
 
         <Button variant="primary" type="submit">
           Update User
         </Button>
+        {error && <p className="text-danger mt-2">{error}</p>}
       </Form>
     </div>
   );

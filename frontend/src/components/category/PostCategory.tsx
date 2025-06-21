@@ -1,6 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { Container, Form, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { createCategory } from "../../services/CategoryService";
 
 const PostCategory: React.FC = () => {
   const [name, setName] = useState("");
@@ -18,14 +19,7 @@ const PostCategory: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, userId: parseInt(userId) }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create category");
-
+      await createCategory(name, parseInt(userId));
       setSuccess(true);
       setError("");
       setTimeout(() => navigate("/categories"), 1500);

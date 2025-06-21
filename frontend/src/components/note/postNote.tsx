@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { getCategoriesByUser } from "../../services/CategoryService";
+import { createNote } from "../../services/NoteService";
 
 const PostNote: React.FC = () => {
   const [title, setTitle] = useState("");
@@ -8,32 +11,28 @@ const PostNote: React.FC = () => {
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/categories");
-        const data = await res.json();
+        if (!userId) throw new Error("User ID not found");
+        const data = await getCategoriesByUser(userId);
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch categories");
       }
     };
     fetchCategories();
-  }, []);
+  }, [userId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) return setError("No user in session");
     try {
-      const response = await fetch("http://localhost:8080/api/notes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, categoryId, userId: Number(userId) }),
-      });
-      if (!response.ok) throw new Error("Error creating note");
+      await createNote({ title, content, categoryId, userId: Number(userId) });
       setSuccess(true);
       setTitle("");
       setContent("");
@@ -82,12 +81,7 @@ const PostNote: React.FC = () => {
             ))}
           </Form.Select>
         </Form.Group>
-        <Button 
-        type="submit" variant="primary"
-        onClick={()=> handleSubmit}
-        className="ml-2">
-          Create Note
-         </Button>
+        <Button type="submit" variant="primary">Create Note</Button>
       </Form>
     </Container>
   );

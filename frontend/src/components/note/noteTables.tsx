@@ -1,7 +1,8 @@
-// File: src/components/note/NoteTable.tsx
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Container, Spinner, Alert, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { getNotesByUser, deleteNote } from "../../services/NoteService";
+import { getCategoriesByUser } from "../../services/CategoryService";
 
 interface Note {
   id: number;
@@ -32,17 +33,11 @@ const NoteTables: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [notesRes, categoriesRes] = await Promise.all([
-          fetch("http://localhost:8080/api/notes"),
-          fetch("http://localhost:8080/api/categories/user/" + userId)
+        const [notesData, categoriesData] = await Promise.all([
+          getNotesByUser(userId),
+          getCategoriesByUser(userId)
         ]);
-
-        if (!notesRes.ok || !categoriesRes.ok) throw new Error("Failed to fetch data");
-
-        const notesData: Note[] = await notesRes.json();
-        const categoriesData: Category[] = await categoriesRes.json();
-
-        setNotes(notesData.filter((note) => note.userId.toString() === userId));
+        setNotes(notesData);
         setCategories(categoriesData);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
@@ -56,14 +51,8 @@ const NoteTables: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const res = await fetch(`http://localhost:8080/api/notes/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        setNotes(notes.filter((note) => note.id !== id));
-      } else {
-        throw new Error("Delete failed");
-      }
+      await deleteNote(id);
+      setNotes(notes.filter((note) => note.id !== id));
     } catch (err) {
       alert("Failed to delete note");
     }
